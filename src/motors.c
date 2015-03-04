@@ -1,46 +1,113 @@
+
 #include "motors.h"
+#include "led.h"
+#include "config.h"
 
 #include <avr/io.h>
 #include <util/delay.h>
 
+void init_motor(MotorPosition p) {
+    switch(p) {
+        case MOTOR_TOP_LEFT:
+            DDRB |= 0x08;
+            OCR0 = 127;
+            TCCR0 |= 0x62;
+            break;
+        case MOTOR_TOP_RIGHT:
+            break;
+        case MOTOR_BOTTOM_RIGHT:
+            break;
+        case MOTOR_BOTTOM_LEFT:
+            break;
+    }
+}
 
 void init_motors() {
 
-  set_speed(0, FULL);
-  _delay_ms(2000);
+    flash_led();
+    init_motor(MOTOR_TOP_LEFT);
+    set_speed(MOTOR_TOP_LEFT, FULL);
+    // set_speed(MOTOR_TOP_RIGHT, FULL);
+    // set_speed(MOTOR_BOTTOM_RIGHT, FULL);
+    // set_speed(MOTOR_BOTTOM_LEFT, FULL);
+    _delay_ms(3000);
 
-  set_speed(0, OFF);
-  _delay_ms(2000);
+    flash_led();
+    set_speed(MOTOR_TOP_LEFT, OFF);
+    // set_speed(MOTOR_TOP_RIGHT, OFF);
+    // set_speed(MOTOR_BOTTOM_RIGHT, OFF);
+    // set_speed(MOTOR_BOTTOM_LEFT, OFF);
+    _delay_ms(3000);
 
 }
 
-void set_speed(char n, MotorState state) {
-  if(n > 3 || n < 0) {
-    return;
-  }
+void cut_motors() {
+    OCR0 = 0x0;
+    TCCR0 &= 0x60;
+    DDRB &= 0xFF - 0x08;
 
-  if(n != 0)
-    return;
+}
 
-  // set OC0 pin as output
-  DDRB |= 0x08;
+void set_speed(MotorPosition p, MotorState state) {
 
-  switch(state) {
-  case FULL:
-    OCR0 = 127;
-    break;
-  case HALF:
-    OCR0 = 94;
-    break;
-  case OFF:
-    OCR0 = 62;
-    break;
-  case CUT:
-    DDRB &= 0xff - 0x08;
-    break;
-  }
+    char duty = 62;
 
-  TCCR0 = 0x62;
+    switch(state) {
+        case FULL:
+        duty = 127;
+        break;
+        case HALF:
+        duty = 94;
+        break;
+        case OFF:
+        duty = 62;
+        break;
 
+    }
+
+    switch(p) {
+        case MOTOR_TOP_LEFT:
+            OCR0 = duty;
+            break;
+        case MOTOR_TOP_RIGHT:
+            break;
+        case MOTOR_BOTTOM_RIGHT:
+            break;
+        case MOTOR_BOTTOM_LEFT:
+            break;
+    }
+}
+
+void test_motor(MotorPosition p) {
+    if(p == MOTOR_TOP_LEFT) {
+        flash_led();
+        set_speed(MOTOR_TOP_LEFT, HALF);
+        _delay_ms(1000);
+
+        flash_led();
+        set_speed(MOTOR_TOP_LEFT, OFF);
+        _delay_ms(1000);
+
+        flash_led();
+        set_speed(MOTOR_TOP_LEFT, FULL);
+        _delay_ms(1000);
+        flash_led();
+        set_speed(MOTOR_TOP_LEFT, HALF);
+        _delay_ms(1000);
+        flash_led();
+        set_speed(MOTOR_TOP_LEFT, FULL);
+        _delay_ms(1000);
+        flash_led();
+        set_speed(MOTOR_TOP_LEFT, HALF);
+        _delay_ms(1000);
+
+        flash_led();
+        set_speed(MOTOR_TOP_LEFT, OFF);
+        _delay_ms(1000);
+
+        flash_led();
+        cut_motors();
+        _delay_ms(1000);
+    }
 
 }

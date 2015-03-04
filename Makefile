@@ -13,7 +13,7 @@ HEADERS = $(wildcard $(CINCLUDE)/*.h)
 C_SOURCES = $(wildcard $(SRCDIR)/*.c)
 OBJS = $(C_SOURCES:$(SRCDIR)/%.c=$(OBJDIR)/%.elf)
 
-CFLAGS = -Wall $(DEBUG) -Os -fshort-enums -mmcu=$(C_DEVICE) -I$(CINCLUDE)
+CFLAGS = -Wall $(DEBUG) -Os -fshort-enums -mmcu=$(C_DEVICE) -I$(CINCLUDE) -I.
 OBJCPFLAGS = -j .text -j .data -O ihex
 LOFLAGS = -p $(LO_DEVICE) -c usbtiny -e
 
