@@ -14,6 +14,7 @@
 void setPort(volatile uint8_t *port, uint8_t pos, uint8_t state);
 void setReg(volatile uint8_t *reg, uint8_t pos, uint8_t state);
 void delay_ms(int time);
+void read_byte(uint8_t byte);
 
 
 #endif
