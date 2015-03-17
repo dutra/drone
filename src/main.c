@@ -7,6 +7,7 @@
 #include "motors.h"
 #include "util.h"
 #include "led.h"
+#include "spi.h"
 
 #define WHO_AM_I_G 0x0F
 #define MOSI 5
@@ -31,17 +32,15 @@ int main (void) {
     DDRA = 0xFF;
     PORTA = 0xFE;
 
-    DDRB = (1<<MOSI) | (1<<SCK) | (1<<SS);
-    SPCR = (1<<SPE) | (1<<MSTR) | (1<<CPOL) | (1<<CPHA) | (1<<SPR0);
+
+    spi_init(SPI_MODE3);
 
     PORTA = ~((1<<6)|1);
 
-    SPDR = (0x80 | (0x3F & 0x0F));
-    while (!(SPSR & (1<<SPIF))) ; // wait
+    spi_transmit(0x80 | (0x3F & 0x0F));
 
-    SPDR = 0x00;
-    while (!(SPSR & (1<<SPIF))) ; // wait
-    whoami = SPDR;
+    whoami = spi_transmit(0x00);
+
     PORTA = 0xFE;
 
     read_byte(whoami);
