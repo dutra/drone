@@ -41,13 +41,27 @@ void spi_init(SpiMode spi_mode) {
 }
 uint8_t spi_transmit(uint8_t byte) {
 
-    // For writing, set MSB high
-    // For reading, set MSB low
+    // For writing, set MSB low
+    // For reading, set MSB high
     // For a multiple byte transmission, set bit 6 high
     SPDR = byte;
     while (!(SPSR & (1<<SPIF))) ; // wait
     return SPDR;
 }
+
+void spi_write_byte(uint8_t cs_pin, uint8_t sub_address, uint8_t byte) {
+
+    PORTA &= ~(1<<cs_pin);
+
+    // For writing, MSB should be low
+    // For single byte, bit 6 should be low
+    spi_transmit(sub_address & 0x3F);
+    spi_transmit(byte);
+
+    PORTA |= (1<<cs_pin);
+
+}
+
 
 uint8_t spi_read_byte(uint8_t cs_pin, uint8_t sub_address) {
     uint8_t tmp;

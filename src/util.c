@@ -34,3 +34,12 @@ void read_byte(uint8_t byte) {
             _delay_ms(1000);
     }
 }
+
+void read_word(uint16_t word) {
+    for(char pos = 15; pos >= 0; pos--) {
+        if(word & (1 << pos))
+            flash_led(1, 500);
+        else
+            _delay_ms(1000);
+        }
+}
