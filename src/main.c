@@ -1,13 +1,10 @@
 #include "config.h"
 
-#include <avr/io.h>
-#include <util/delay.h>
 #include <inttypes.h>
 
-#include "motors.h"
-#include "util.h"
 #include "led.h"
 #include "imu.h"
+#include "usart.h"
 
 
 
@@ -16,9 +13,15 @@ int main (void) {
 
     flash_led(3, 200);
 
-    if(imu_init()) {
-        flash_led(1, 500);
-    }
+    usart_init();
+
+    usart_send('a');
+    usart_send('\r');
+    usart_send('\n');
+
+//    if(imu_init()) {
+//        flash_led(1, 500);
+//    }
 
     flash_led(3, 200);
 
