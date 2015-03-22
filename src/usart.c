@@ -16,7 +16,14 @@ void usart_init() {
     UBRR0H = 0x0;
 }
 void usart_send (uint8_t byte) {
-
     while (! (UCSR0A & (1<<UDRE0) ) );
     UDR0 = byte;
+}
+
+void usart_put (char * string) {
+    while(*string) {
+        if(*string == '\n')
+            usart_send('\r');
+        usart_send(*string++);
+    }
 }

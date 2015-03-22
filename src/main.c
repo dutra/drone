@@ -6,9 +6,6 @@
 #include "imu.h"
 #include "usart.h"
 
-
-
-
 int main (void) {
 
     flash_led(3, 200);
@@ -18,8 +15,9 @@ int main (void) {
     usart_send('a');
     usart_send('\r');
     usart_send('\n');
+    usart_put("Hello\n");
 
-//    if(imu_init()) {
+//    if(imu_init() != 0) {
 //        flash_led(1, 500);
 //    }
 

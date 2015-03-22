@@ -6,6 +6,7 @@
 
 void usart_init();
 void usart_send (uint8_t byte);
+void usart_put (char * string);
 
 
 #endif
