@@ -7,6 +7,7 @@
 #include "imu.h"
 #include "usart.h"
 #include "log.h"
+#include "motors.h"
 
 int main (void) {
     AngularSpeed as;
@@ -31,6 +32,12 @@ int main (void) {
     log_raw(", GZ: ");
     log_int(as.gz);
     log_raw("\n");
+
+    log_info("Starting motor...");
+    init_motors();
+    log_info("Testing TOP_LEFT motor...");
+    test_motor(MOTOR_TOP_LEFT);
+    log_info("All done");
 
     flash_led(3, 200);
 

@@ -9,9 +9,11 @@
 void init_motor(MotorPosition p) {
     switch(p) {
         case MOTOR_TOP_LEFT:
-            DDRB |= 0x08;
+            DDRB |= OC0A_PIN;
             OCR0A = 127;
-            TCCR0A |= 0x62;
+//            TCCR0A |= 0x62; // WGM00, COM01, CS01
+            TCCR0A |= (1<<COM0A1) | (1<<WGM00); // COM0A1, WGM0
+            TCCR0B |= (1<<CS01);
             break;
         case MOTOR_TOP_RIGHT:
             break;
