@@ -28,9 +28,7 @@ int8_t imu_init() {
         return 2;
 
     imu_gyro_init();
-    imu_read_gyro();
 
-//    read_byte(whoami);
     return 0;
 }
 
@@ -42,17 +40,25 @@ void imu_gyro_init() {
         spi_write_byte(CS_G_BIT, CTRL_REG5_G, 0x00); //
 }
 
-void imu_read_gyro() {
+void imu_read_gyro(AngularSpeed *as) {
     uint8_t tmp_l, tmp_h;
-    int16_t gx = 0;
 
     tmp_l = spi_read_byte(CS_G_BIT, OUT_X_L_G);
     tmp_h = spi_read_byte(CS_G_BIT, OUT_X_H_G);
+    as->gx = (tmp_h << 8) | tmp_l;
 
-    gx = (tmp_h << 8) | tmp_l;
+    tmp_l = spi_read_byte(CS_G_BIT, OUT_Y_L_G);
+    tmp_h = spi_read_byte(CS_G_BIT, OUT_Y_H_G);
+    as->gy = (tmp_h << 8) | tmp_l;
 
-    read_byte(tmp_h);
+    tmp_l = spi_read_byte(CS_G_BIT, OUT_Z_L_G);
+    tmp_h = spi_read_byte(CS_G_BIT, OUT_Z_H_G);
+    as->gz = (tmp_h << 8) | tmp_l;
 
+}
 
-
+void imu_calc_gyro(AngularSpeed *as) {
+    as->gx *= 245.0/32768.0;
+    as->gy *= 245.0/32768.0;
+    as->gz *= 245.0/32768.0;
 }

@@ -1,7 +1,7 @@
 
 #include "usart.h"
 #include <avr/io.h>
-
+#include <stdlib.h>
 
 void usart_init() {
 
@@ -19,6 +19,13 @@ void usart_send (uint8_t byte) {
     while (! (UCSR0A & (1<<UDRE0) ) );
     UDR0 = byte;
 }
+
+void usart_send_int (int16_t n) {
+    char tmp[7];
+    itoa(n, tmp, 10);
+    usart_put(tmp);
+}
+
 
 void usart_put (char * string) {
     while(*string) {
