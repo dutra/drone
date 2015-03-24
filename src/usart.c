@@ -26,6 +26,12 @@ void usart_send_int (int16_t n) {
     usart_put(tmp);
 }
 
+void usart_send_double (double n) {
+    char tmp[7];
+    dtostrf(n, 6, 3, tmp);
+    usart_put(tmp);
+}
+
 
 void usart_put (char * string) {
     while(*string) {

@@ -17,3 +17,6 @@ void log_info(char * string) {
 void log_int(int n) {
     usart_send_int(n);
 }
+void log_double(double n) {
+    usart_send_double(n);
+}
