@@ -9,11 +9,11 @@
 #include "usart.h"
 #include "log.h"
 #include "motors.h"
+#include <avrfix.h>
 
 int main (void) {
     AngularSpeed as;
     Acceleration acel;
-
 
     flash_led(3, 200);
 
