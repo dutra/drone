@@ -3,17 +3,18 @@
 #define _IMU_H
 
 #include <inttypes.h>
+#include <stdfix.h>
 
 typedef struct {
-    double gx;
-    double gy;
-    double gz;
+    signed _Accum gx;
+    signed _Accum gy;
+    signed _Accum gz;
 } AngularSpeed;
 
 typedef struct {
-    double ax;
-    double ay;
-    double az;
+    signed _Accum ax;
+    signed _Accum ay;
+    signed _Accum az;
 } Acceleration;
 
 // gyroscope registers
@@ -53,7 +54,5 @@ void imu_gyro_init();
 void imu_accel_init();
 void imu_read_accel(Acceleration *acel);
 void imu_read_gyro(AngularSpeed *as);
-void imu_calc_accel(Acceleration *acel);
-void imu_calc_gyro(AngularSpeed *as);
 
 #endif

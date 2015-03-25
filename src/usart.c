@@ -20,18 +20,6 @@ void usart_send (uint8_t byte) {
     UDR0 = byte;
 }
 
-void usart_send_int (int16_t n) {
-    char tmp[7];
-    itoa(n, tmp, 10);
-    usart_put(tmp);
-}
-
-void usart_send_double (double n) {
-    char tmp[7];
-    dtostrf(n, 6, 3, tmp);
-    usart_put(tmp);
-}
-
 
 void usart_put (char * string) {
     while(*string) {
@@ -39,4 +27,10 @@ void usart_put (char * string) {
             usart_send('\r');
         usart_send(*string++);
     }
+}
+
+void usart_send_double (double n) {
+    char tmp[12];
+    dtostrf(n, 8, 3, tmp);
+    usart_put(tmp);
 }

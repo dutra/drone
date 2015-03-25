@@ -2,6 +2,7 @@
 
 #include <util/delay.h>
 #include <inttypes.h>
+#include <stdio.h>
 
 #include "led.h"
 #include "imu.h"
@@ -12,6 +13,7 @@
 int main (void) {
     AngularSpeed as;
     Acceleration acel;
+
 
     flash_led(3, 200);
 
@@ -33,28 +35,23 @@ int main (void) {
 //    log_info("All done");
 
     flash_led(3, 200);
-
+    char tmp[64];
   while(1) {
-      _delay_ms(100);
+      _delay_ms(500);
+
       imu_read_accel(&acel);
-      imu_calc_accel(&acel);
-      log_raw("AX: ");
-      log_double(acel.ax);
-      log_raw(", AY: ");
-      log_double(acel.ay);
-      log_raw(", AZ: ");
-      log_double(acel.az);
+      log_pair("AX: ", acel.ax);
+      log_pair("AY: ", acel.ay);
+      log_pair("AZ: ", acel.az);
       log_raw("\n");
 
       imu_read_gyro(&as);
-      imu_calc_gyro(&as);
-      log_raw("GX: ");
-      log_int(as.gx);
-      log_raw(", GY: ");
-      log_int(as.gy);
-      log_raw(", GZ: ");
-      log_int(as.gz);
+      log_pair("GX: ", as.gx);
+      log_pair("GY: ", as.gy);
+      log_pair("GZ: ", as.gz);
       log_raw("\n");
+
+
 
   }
 

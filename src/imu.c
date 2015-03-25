@@ -7,6 +7,7 @@
 
 #include <inttypes.h>
 #include <avr/io.h>
+#include <stdfix.h>
 
 int8_t imu_init() {
     uint8_t whoami = 0x00;
@@ -46,25 +47,31 @@ void imu_read_accel(Acceleration *acel) {
 
     tmp_l = spi_read_byte(CS_XM_BIT, OUT_X_L_A);
     tmp_h = spi_read_byte(CS_XM_BIT, OUT_X_H_A);
-    acel->ax = (tmp_h << 8) | tmp_l;
+    acel->ax = (int16_t) ((tmp_h << 8) | tmp_l);
+    acel->ax /= (signed _Accum) 32768.0;
+    acel->ax *= (signed _Accum) 2.0;
 
     tmp_l = spi_read_byte(CS_XM_BIT, OUT_Y_L_A);
     tmp_h = spi_read_byte(CS_XM_BIT, OUT_Y_H_A);
-    acel->ay = (tmp_h << 8) | tmp_l;
+    acel->ay = (int16_t) ((tmp_h << 8) | tmp_l);
+    acel->ay /= (signed _Accum) 32768.0;
+    acel->ay *= (signed _Accum) 2.0;
 
     tmp_l = spi_read_byte(CS_XM_BIT, OUT_Z_L_A);
     tmp_h = spi_read_byte(CS_XM_BIT, OUT_Z_H_A);
-    acel->az = (tmp_h << 8) | tmp_l;
+    acel->az = (int16_t) ((tmp_h << 8) | tmp_l);
+    acel->az /= (signed _Accum) 32768.0;
+    acel->az *= (signed _Accum) 2.0;
 
 }
 
 
 void imu_gyro_init() {
-        spi_write_byte(CS_G_BIT, CTRL_REG1_G, 0x0F); // Normal mode, enable all axis
-        spi_write_byte(CS_G_BIT, CTRL_REG2_G, 0x00); // high cutoff frequency
-        spi_write_byte(CS_G_BIT, CTRL_REG3_G, 0x00); // no interrupts
-        spi_write_byte(CS_G_BIT, CTRL_REG4_G, 0x00); // scale = 245 dps
-        spi_write_byte(CS_G_BIT, CTRL_REG5_G, 0x00); //
+    spi_write_byte(CS_G_BIT, CTRL_REG1_G, 0x0F); // Normal mode, enable all axis
+    spi_write_byte(CS_G_BIT, CTRL_REG2_G, 0x00); // high cutoff frequency
+    spi_write_byte(CS_G_BIT, CTRL_REG3_G, 0x00); // no interrupts
+    spi_write_byte(CS_G_BIT, CTRL_REG4_G, 0x00); // scale = 245 dps
+    spi_write_byte(CS_G_BIT, CTRL_REG5_G, 0x00); //
 }
 
 void imu_read_gyro(AngularSpeed *as) {
@@ -72,26 +79,20 @@ void imu_read_gyro(AngularSpeed *as) {
 
     tmp_l = spi_read_byte(CS_G_BIT, OUT_X_L_G);
     tmp_h = spi_read_byte(CS_G_BIT, OUT_X_H_G);
-    as->gx = (tmp_h << 8) | tmp_l;
+    as->gx = (int16_t) ((tmp_h << 8) | tmp_l);
+    as->gx /= (signed _Accum) 32768.0;
+    as->gx *= 245.0;
 
     tmp_l = spi_read_byte(CS_G_BIT, OUT_Y_L_G);
     tmp_h = spi_read_byte(CS_G_BIT, OUT_Y_H_G);
-    as->gy = (tmp_h << 8) | tmp_l;
+    as->gy = (int16_t) ((tmp_h << 8) | tmp_l);
+    as->gy /= (signed _Accum) 32768.0;
+    as->gy *= 245.0;
 
     tmp_l = spi_read_byte(CS_G_BIT, OUT_Z_L_G);
     tmp_h = spi_read_byte(CS_G_BIT, OUT_Z_H_G);
-    as->gz = (tmp_h << 8) | tmp_l;
+    as->gz = (int16_t) ((tmp_h << 8) | tmp_l);
+    as->gz /= (signed _Accum) 32768.0;
+    as->gz *= 245.0;
 
-}
-
-void imu_calc_gyro(AngularSpeed *as) {
-    as->gx *= 245.0/32768.0;
-    as->gy *= 245.0/32768.0;
-    as->gz *= 245.0/32768.0;
-}
-
-void imu_calc_accel(Acceleration *acel) {
-    acel->ax *= 2.0/32768.0;
-    acel->ay *= 2.0/32768.0;
-    acel->az *= 2.0/32768.0;
 }
